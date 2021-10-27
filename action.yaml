@@ -10,10 +10,6 @@ inputs:
      description: 'Location of the deployment.yml file'
      required: false
      default: 'kubernetes/deployment.yml'
-   kube_config_data:
-     description: 'Rancher Environments Kube Config file'
-     required: true
-     default: '${{ secrets.KUBE_CONFIG_NP_RANCHER }}'
    namespace:
      description: 'Rancher namespace'
      required: true
@@ -25,7 +21,6 @@ inputs:
    environment:
      descripton: 'dev, prod'
      required: true
-     default: 'dev'
      
 runs:
   using: "composite"
@@ -47,33 +42,24 @@ runs:
         replace: ${{ steps.read_label.outputs.contents }}
         include: ${{ inputs.deployment_yamp_path }}
 
-   - name: Deploy to Rancher Cluster
+    - name: Deploy to np-rancher cluster
       uses: SW-CORP-IT/sw-rancher-deploy-action@master
-#       if: "${{ steps.environment.outputs.env == 'dev'}}"
+      if: "${{ steps.environment.outputs.env == 'dev'}}"
       env:
         KUBE_CONFIG_DATA: "${{ secrets.KUBE_CONFIG_NP_RANCHER }}"
       with:
         namespace: "${{ inputs.environment }}-${{ inputs.namespace }}"
         files: "-f ${{ inputs.files }}"
         
-#     - name: Which environemt to deploy
-#       id: env
-#       run: |
-#         env-name=`echo "${{  github.event.client_payload.environment }}" | tr '[:upper:]' '[:lower:]'`
-#         echo "::set-output name=env::${env-name}"
-#         echo "${{ steps.environment.outputs.env }}"
-    
- 
-      
-#     - name: Deploy to Rancher prod
-#       uses: SW-CORP-IT/sw-rancher-deploy-action@master
-# #       if: "${{ steps.prodordev.outputs.env == 'prod'}}"
-#       env:
-#         KUBE_CONFIG_DATA: ${{ inputs.kube_config_data }}
-#       with:
-#         namespace: "${{  steps.prodordev.outputs.env }}-openldap"
-#         files: "-f kubernetes/."
-      
+    - name: Deploy to prod-rancher cluster
+      uses: SW-CORP-IT/sw-rancher-deploy-action@master
+      if: "${{ steps.environment.outputs.env == 'dev'}}"
+      env:
+        KUBE_CONFIG_DATA: "${{ secrets.KUBE_CONFIG_PROD_RANCHER }}"
+      with:
+        namespace: "${{ inputs.environment }}-${{ inputs.namespace }}"
+        files: "-f ${{ inputs.files }}"
+        
 branding:
   icon: git-branch
   color: white
