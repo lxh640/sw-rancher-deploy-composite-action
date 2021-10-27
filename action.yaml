@@ -27,7 +27,7 @@ inputs:
      
 runs:
   using: "composite"
-    steps:
+  steps:
        - name: Read labels file contents
          id: read_labels
          uses: andstor/file-reader-action@v1
