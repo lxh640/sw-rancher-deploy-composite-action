@@ -28,30 +28,30 @@ inputs:
 runs:
   using: "composite"
   steps:
-       - name: Read labels file contents
-         id: read_labels
-         uses: andstor/file-reader-action@v1
-         with:
-           path: ${{ inputs.labels_path }}
+     - name: Read labels file contents
+       id: read_labels
+       uses: andstor/file-reader-action@v1
+       with:
+         path: ${{ inputs.labels_path }}
 
-       - name: File contents
-         run: echo "${{ steps.read_labels.outputs.contents }}"
-         shell: bash
+     - name: File contents
+       run: echo "${{ steps.read_labels.outputs.contents }}"
+       shell: bash
 
-       - name: Replace labels
-         uses: jacobtomlinson/gha-find-replace@master
-         with:
-           find: "@LABELS" 
-           replace: ${{ steps.read_label.outputs.contents }}
-           include: ${{ inputs.deployment_yamp_path }}
+     - name: Replace labels
+       uses: jacobtomlinson/gha-find-replace@master
+       with:
+         find: "@LABELS" 
+         replace: ${{ steps.read_label.outputs.contents }}
+         include: ${{ inputs.deployment_yamp_path }}
 
-       - name: Deploy to rancher cluster
-         uses: sherwin-williams-co/sw-rancher-deploy-action@master
-         env:
-           KUBE_CONFIG_DATA: ${{ inputs.kube_config_data }}
-         with:
-           namespace: "${{ inputs.environment }}-${{ inputs.namespace }}"
-           files: "-f ${{ inputs.files }}"
+     - name: Deploy to rancher cluster
+       uses: sherwin-williams-co/sw-rancher-deploy-action@master
+       env:
+         KUBE_CONFIG_DATA: ${{ inputs.kube_config_data }}
+       with:
+         namespace: "${{ inputs.environment }}-${{ inputs.namespace }}"
+         files: "-f ${{ inputs.files }}"
         
         
 branding:
