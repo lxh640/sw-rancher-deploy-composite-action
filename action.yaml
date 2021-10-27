@@ -12,11 +12,11 @@ inputs:
      default: 'kubernetes/deployment.yml'
    namespace:
      description: 'Rancher namespace'
-     required: true
+     required: false
      default: "${GITHUB_REF##*/}-gitactions"
    files:
      description: 'Kubernetes files to apply'
-     required: true
+     required: false
      default: 'kubernetes/.'
    environment:
      descripton: 'dev, prod'
