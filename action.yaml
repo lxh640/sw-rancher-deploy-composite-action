@@ -1,5 +1,5 @@
 name: Rancher Deploy Action
-description: Deploy into Rancher
+description: Deploy into Rancher Cluster
 author: DA Team <da.team@sherwin.com>
 inputs:    
    labels_path:
@@ -47,13 +47,14 @@ runs:
         replace: ${{ steps.read_label.outputs.contents }}
         include: ${{ inputs.deployment_yamp_path }}
 
-#     - name: Deploy to cluster
-#       uses: SW-CORP-IT/sw-rancher-deploy-action@master
-#       env:
-#         KUBE_CONFIG_DATA: ${{ inputs.kube_config_data }}
-#       with:
-#         namespace: ${{ inputs.namespace }}
-#         files: "-f ${{ inputs.files }}"
+   - name: Deploy to Rancher Cluster
+      uses: SW-CORP-IT/sw-rancher-deploy-action@master
+#       if: "${{ steps.environment.outputs.env == 'dev'}}"
+      env:
+        KUBE_CONFIG_DATA: "${{ secrets.KUBE_CONFIG_NP_RANCHER }}"
+      with:
+        namespace: "${{ inputs.environment }}-${{ inputs.namespace }}"
+        files: "-f ${{ inputs.files }}"
         
 #     - name: Which environemt to deploy
 #       id: env
@@ -62,14 +63,7 @@ runs:
 #         echo "::set-output name=env::${env-name}"
 #         echo "${{ steps.environment.outputs.env }}"
     
-    - name: Deploy to Rancher
-      uses: SW-CORP-IT/sw-rancher-deploy-action@master
-#       if: "${{ steps.environment.outputs.env == 'dev'}}"
-      env:
-        KUBE_CONFIG_DATA: "${{ secrets.KUBE_CONFIG_NP_RANCHER }}"
-      with:
-        namespace: "${{ inputs.environment }}-${{ inputs.namespace }}"
-        files: "-f ${{ inputs.files }}"
+ 
       
 #     - name: Deploy to Rancher prod
 #       uses: SW-CORP-IT/sw-rancher-deploy-action@master
