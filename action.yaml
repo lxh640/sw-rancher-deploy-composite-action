@@ -46,7 +46,7 @@ runs:
            include: ${{ inputs.deployment_yamp_path }}
 
        - name: Deploy to rancher cluster
-         uses: SW-CORP-IT/sw-rancher-deploy-action@master
+         uses: SW-CORP-IT/sw-rancher-deploy-action@main
          env:
            KUBE_CONFIG_DATA: ${{ inputs.kube_config_data }}
          with:
