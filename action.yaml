@@ -1,1 +1,56 @@
+name: Maven Publish Action
+description: Publish Maven artifact into SW Artifactory
+author: DA Team <da.team@sherwin.com>
+inputs:    
+   labels_path:
+    description: 'Location of kubernetes labels'
+    required: false
+    default: 'kubernetes/labels'
+   deployment_yaml_path:
+     description: 'Location of the deployment.yml file'
+     required: false
+     default: 'kubernetes/deployment.yml'
+   kube_config_data:
+     description: 'Rancher Environments Kube Config file'
+     required: true
+     default: '${{ secrets.KUBE_CONFIG_NP_RANCHER }}'
+   namespace:
+     description: 'Rancher namespace'
+     required: true
+     default: "${GITHUB_REF##*/}-gitactions"
+   files:
+     description: 'Kubernetes files to apply'
+     required: true
+     default: 'kubernetes/.'
+     
+runs:
+  using: "composite"
+    steps:
+    - name: Read labels file contents
+      id: read_labels
+      uses: andstor/file-reader-action@v1
+      with:
+        path: ${{ inputs.labels_path }}
+        
+    - name: File contents
+      run: echo "${{ steps.read_labels.outputs.contents }}"
+      shell: bash
+      
+    - name: Replace labels
+      uses: jacobtomlinson/gha-find-replace@master
+      with:
+        find: "@LABELS" 
+        replace: ${{ steps.read_label.outputs.contents }}
+        include: ${{ inputs.deployment_yamp_path }}
 
+    - name: Deploy to cluster
+      uses: SW-CORP-IT/sw-rancher-deploy-action@master
+      env:
+        KUBE_CONFIG_DATA: ${{ inputs.kube_config_data }}
+      with:
+        namespace: ${{ inputs.namespace }}
+        files: "-f ${{ inputs.files }}"
+      
+branding:
+  icon: git-branch
+  color: white
