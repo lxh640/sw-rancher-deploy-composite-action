@@ -21,6 +21,9 @@ inputs:
    environment:
      descripton: 'dev, prod'
      required: true
+   kube_config_data:
+     description: 'Kube config for rancher cluster'
+     required: true
      
 runs:
   using: "composite"
@@ -42,23 +45,14 @@ runs:
         replace: ${{ steps.read_label.outputs.contents }}
         include: ${{ inputs.deployment_yamp_path }}
 
-    - name: Deploy to np-rancher cluster
+    - name: Deploy to rancher cluster
       uses: SW-CORP-IT/sw-rancher-deploy-action@master
-      if: "${{ steps.environment.outputs.env == 'dev'}}"
       env:
-        KUBE_CONFIG_DATA: "${{ secrets.KUBE_CONFIG_NP_RANCHER }}"
+        KUBE_CONFIG_DATA: ${{ inputs.kube_config_data }}
       with:
         namespace: "${{ inputs.environment }}-${{ inputs.namespace }}"
         files: "-f ${{ inputs.files }}"
         
-    - name: Deploy to prod-rancher cluster
-      uses: SW-CORP-IT/sw-rancher-deploy-action@master
-      if: "${{ steps.environment.outputs.env == 'dev'}}"
-      env:
-        KUBE_CONFIG_DATA: "${{ secrets.KUBE_CONFIG_PROD_RANCHER }}"
-      with:
-        namespace: "${{ inputs.environment }}-${{ inputs.namespace }}"
-        files: "-f ${{ inputs.files }}"
         
 branding:
   icon: git-branch
