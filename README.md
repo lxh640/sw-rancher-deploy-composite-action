@@ -1,10 +1,31 @@
 # Deploy to Rancher Cluster
 
-### Parameters: 
-Name | Type |            | Default |
----  | ---  | ---------- | ------- |
-`environment`| String | Required | `dev`
-`kube_config_data` | Secret | Required
+**Inputs**
+```yaml
+inputs:    
+   labels_path:
+    description: 'Location of kubernetes labels'
+    required: false
+    default: 'kubernetes/labels'
+   deployment_yaml_path:
+     description: 'Location of the deployment.yml file'
+     required: false
+     default: 'kubernetes/deployment.yml'
+   namespace:
+     description: 'Rancher namespace'
+     required: true
+     default: 'gitactions'
+   files:
+     description: 'Kubernetes files to apply'
+     required: false
+     default: 'kubernetes/.'
+   environment:
+     descripton: 'dev, prod'
+     required: true
+   kube_config_data:
+     description: 'Kube config for rancher cluster'
+     required: true
+```
 
 Usage:
 ```yaml
