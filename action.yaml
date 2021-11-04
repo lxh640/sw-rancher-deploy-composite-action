@@ -19,7 +19,7 @@ inputs:
      required: false
      default: 'kubernetes/.'
    environment:
-     descripton: 'np, prod'
+     descripton: 'dev, prod'
      required: true
    kube_config_data:
      description: 'Kube config for rancher cluster'
