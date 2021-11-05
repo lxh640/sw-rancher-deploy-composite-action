@@ -21,9 +21,14 @@ inputs:
    environment:
      descripton: 'dev, qa, prod'
      required: true
-   kube_config_data:
-     description: 'Kube config for rancher cluster'
-     required: true
+   np_kube_config_data:
+     description: 'Kube config for non-prod rancher cluster'
+     required: false
+     default: ${{ secrets.KUBE_CONFIG_NP_RANCHER }}
+   prod_kube_config_data:
+     description: 'Kube config for prod rancher cluster'
+     required: false
+     default: ${{ secrets.KUBE_CONFIG_PROD_RANCHER }}
    jf_artifactory_token:
      description: 'Artifactory Auth Token'
      required: true
@@ -31,13 +36,6 @@ inputs:
      description: 'Artifactory Docker image name that need to be promoted to the next environment repo'
      required: false
      default: ${{ github.repository }}
-#    image_tag:
-#      description: 'Artifactory Docker image tag that need to be promoted to the next environment repo'
-#      required: false
-#    github_repository:
-#      description: 'GitHub Repository'
-#      required: false
-#      default: ${{ github.repository }}
    github_token:
      description: 'GitHub token'
      required: false
@@ -108,7 +106,7 @@ runs:
       with:
         environment: ${{ inputs.environment }}
         namespace: ${{ inputs.namespace }}
-        kube_config_data: ${{ inputs.kube_config_data }}
+        kube_config_data: ${{ inputs.np_kube_config_data }}
         jf_artifactory_token: ${{ secrets.jf_artifactory_token }}
         image_name: sherwin-williams-co/da-team-workflows
         image_tag: ${{ steps.image_tag.outputs.deploy_description }}
@@ -119,7 +117,7 @@ runs:
       with:
         environment: ${ {inputs.environment }}
         namespace: ${{ inputs.namespace }}
-        kube_config_data: ${{ inputs.kube_config_data }}
+        kube_config_data: ${{ inputs.prod_kube_config_data }}
         jf_artifactory_token: ${{ inputs.jf_artifactory_token }}
     
     - name: Docker image promote 
