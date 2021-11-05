@@ -1,4 +1,4 @@
-name: Rancher Deploy Action
+name: Promote Docker Image and Rancher Deploy Action
 description: Promote Docker Image and Deploy into Rancher Cluster
 author: DA Team <da.team@sherwin.com>
 inputs:    
