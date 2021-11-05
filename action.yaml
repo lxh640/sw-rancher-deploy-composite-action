@@ -21,6 +21,7 @@ inputs:
    environment:
      descripton: 'dev, qa, prod'
      required: true
+     default: ${{ github.event.inputs.environment }}
    np_kube_config_data:
      description: 'Kube config for non-prod rancher cluster'
      required: false
