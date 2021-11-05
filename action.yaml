@@ -30,13 +30,14 @@ inputs:
    image_name:
      description: 'Artifactory Docker image name that need to be promoted to the next environment repo'
      required: true
+     default: ${{ github.repository
    image_tag:
      description: 'Artifactory Docker image tag that need to be promoted to the next environment repo'
      required: true
-   github_repository:
-     description: 'GitHub Repository'
-     required: false
-     default: ${{ github.repository }}
+#    github_repository:
+#      description: 'GitHub Repository'
+#      required: false
+#      default: ${{ github.repository }}
    github_token:
      description: 'GitHub token'
      required: false
@@ -56,7 +57,7 @@ runs:
       uses: sherwin-williams-co/sw-github-deploydesc-action@main
       id: image_tag
       with:
-        repo: ${{ inputs.github_repository}}
+        repo: ${{ inputs.image_name}}
         gittoken: ${{ inputs.github_token }}
         deployenv: ${{steps.prv-env.outputs.environmentDeployEnvironment}}
          
