@@ -82,7 +82,7 @@ runs:
         KUBE_CONFIG_DATA: ${{ inputs.np_kube_config_data }}
       with:
         files: "-f kubernetes/."
-        namespace: ${{ inputs.namespace }}
+        namespace: ${{ inputs.environment }}-${{ inputs.namespace }}
 #         environment: ${{ inputs.environment }}
 #         namespace: ${{ inputs.namespace }}
 #         kube_config_data: ${{ inputs.np_kube_config_data }}
