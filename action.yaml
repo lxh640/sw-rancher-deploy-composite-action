@@ -121,13 +121,13 @@ runs:
         jf_artifactory_token: ${{ inputs.jf_artifactory_token }}
     
     - name: Docker image promote 
-       uses: sherwin-williams-co/sw-promote-docker-image-action@main
-       if: ${{ inputs.environment != 'dev' }}
-       with:
-         environment: ${{ inputs.environment }}
-         image_name: ${{ inputs.image_name }}
-         image_tag: ${{ steps.image_tag.outputs.deployment_build_number }}
-         artifactory_secret: ${{ inputs.jf_artifactory_token }}
+      uses: sherwin-williams-co/sw-promote-docker-image-action@main
+      if: ${{ inputs.environment != 'dev' }}
+      with:
+        environment: ${{ inputs.environment }}
+        image_name: ${{ inputs.image_name }}
+        image_tag: ${{ steps.image_tag.outputs.deployment_build_number }}
+        artifactory_secret: ${{ inputs.jf_artifactory_token }}
       
     - name: Update deployment status (success)
       if: success()
