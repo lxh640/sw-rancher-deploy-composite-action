@@ -48,14 +48,14 @@ runs:
 # #          replace: ${{ steps.read_label.outputs.contents }}
 # #          include: ${{ inputs.deployment_yamp_path }}
 
-     - name: Docker image promote 
-       uses: sherwin-williams-co/sw-promote-docker-image-action@main
-       if: ${{ github.event.inputs.ENV != 'dev' }}
-       with:
-         environment: ${{ github.event.inputs.ENV }}
-         image_name: ${{ github.event.inputs.IMAGE_NAME }}
-         image_tag: ${{ github.event.inputs.TAG }}
-         artifactory_secret: ${{ inputs.jf_artifactory_token }}
+#      - name: Docker image promote 
+#        uses: sherwin-williams-co/sw-promote-docker-image-action@main
+#        if: ${{ github.event.inputs.ENV != 'dev' }}
+#        with:
+#          environment: ${{ github.event.inputs.ENV }}
+#          image_name: ${{ github.event.inputs.IMAGE_NAME }}
+#          image_tag: ${{ github.event.inputs.TAG }}
+#          artifactory_secret: ${{ inputs.jf_artifactory_token }}
 
      - name: Deploy to rancher cluster
        uses: sherwin-williams-co/sw-rancher-deploy-action@master
