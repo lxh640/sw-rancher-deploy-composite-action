@@ -76,15 +76,19 @@ runs:
     
     - name: 📦 Deploy to np rancher cluster
       if: ${{ inputs.environment != 'prod' }}
-      uses: sherwin-williams-co/sw-rancher-deploy-composite-action@main
+      uses: sherwin-williams-co/sw-rancher-deploy-action@main
+        env:
+        KUBE_CONFIG_DATA: ${{ inputs.np_kube_config_data }}
       with:
-        environment: ${{ inputs.environment }}
+        files: "-f kubernetes/."
         namespace: ${{ inputs.namespace }}
-        kube_config_data: ${{ inputs.np_kube_config_data }}
-        jf_artifactory_token: ${{ inputs.jf_artifactory_token }}
-        image_name: sherwin-williams-co/da-team-workflows
-        image_tag: ${{ steps.image_tag.outputs.deploy_description }}
-
+#         environment: ${{ inputs.environment }}
+#         namespace: ${{ inputs.namespace }}
+#         kube_config_data: ${{ inputs.np_kube_config_data }}
+#         jf_artifactory_token: ${{ inputs.jf_artifactory_token }}
+#         image_name: sherwin-williams-co/da-team-workflows
+#         image_tag: ${{ steps.image_tag.outputs.deploy_description }}
+        
 #     - name: 📦 Deploy to prod rancher cluster
 #       if: ${{ inputs.environment == 'prod' }}
 #       uses: sherwin-williams-co/sw-rancher-deploy-composite-action@main
@@ -94,14 +98,14 @@ runs:
 #         kube_config_data: ${{ inputs.prod_kube_config_data }}
 #         jf_artifactory_token: ${{ inputs.jf_artifactory_token }}
     
-#     - name: Docker image promote 
-#       uses: sherwin-williams-co/sw-promote-docker-image-action@main
-#       if: ${{ inputs.environment != 'dev' }}
-#       with:
-#         environment: ${{ inputs.environment }}
-#         image_name: ${{ inputs.image_name }}
-#         image_tag: ${{ steps.image_tag.outputs.deployment_build_number }}
-#         artifactory_secret: ${{ inputs.jf_artifactory_token }}
+    - name: Docker image promote 
+      uses: sherwin-williams-co/sw-promote-docker-image-action@main
+      if: ${{ inputs.environment != 'dev' }}
+      with:
+        environment: ${{ inputs.environment }}
+        image_name: ${{ inputs.image_name }}
+        image_tag: ${{ steps.image_tag.outputs.deployment_build_number }}
+        artifactory_secret: ${{ inputs.jf_artifactory_token }}
       
     - name: Update deployment status (success)
       if: success()
