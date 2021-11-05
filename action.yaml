@@ -77,7 +77,7 @@ runs:
     - name: 📦 Deploy to np rancher cluster
       if: ${{ inputs.environment != 'prod' }}
       uses: sherwin-williams-co/sw-rancher-deploy-action@main
-        env:
+      env:
         KUBE_CONFIG_DATA: ${{ inputs.np_kube_config_data }}
       with:
         files: "-f kubernetes/."
