@@ -1,5 +1,5 @@
 name: Rancher Deploy Action
-description: Deploy into Rancher Cluster
+description: Promote Docker Image and Deploy into Rancher Cluster
 author: DA Team <da.team@sherwin.com>
 inputs:    
    labels_path:
