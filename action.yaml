@@ -29,11 +29,11 @@ inputs:
      required: true
    image_name:
      description: 'Artifactory Docker image name that need to be promoted to the next environment repo'
-     required: true
-     default: ${{ github.repository
-   image_tag:
-     description: 'Artifactory Docker image tag that need to be promoted to the next environment repo'
-     required: true
+     required: false
+     default: ${{ github.repository }}
+#    image_tag:
+#      description: 'Artifactory Docker image tag that need to be promoted to the next environment repo'
+#      required: false
 #    github_repository:
 #      description: 'GitHub Repository'
 #      required: false
@@ -128,7 +128,7 @@ runs:
        with:
          environment: ${{ inputs.environment }}
          image_name: ${{ inputs.image_name }}
-         image_tag: ${{ inputs.image_tag }}
+         image_tag: ${{ steps.image_tag.outputs.deployment_build_number }}
          artifactory_secret: ${{ inputs.jf_artifactory_token }}
       
     - name: Update deployment status (success)
