@@ -89,9 +89,8 @@ runs:
       uses: jacobtomlinson/gha-find-replace@v2
       with:
         find: "@LABELS" 
-        replace: "${{ steps.read_label.outputs.contents }}"
-        include: 'kubernetes/deployment.yml'
-#         include: "${{ inputs.deployment_yaml_path }}"
+        replace: ${{ steps.read_labels.outputs.contents }}
+        include: ${{ inputs.deployment_yaml_path }}
    
     - name: 🏷 Replace Image Tag
       uses: jacobtomlinson/gha-find-replace@v2
