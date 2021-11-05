@@ -24,12 +24,10 @@ inputs:
      default: ${{ github.event.inputs.environment }}
    np_kube_config_data:
      description: 'Kube config for non-prod rancher cluster'
-     required: false
-#      default: ${{ secrets.KUBE_CONFIG_NP_RANCHER }}
+     required: true
    prod_kube_config_data:
      description: 'Kube config for prod rancher cluster'
-     required: false
-#      default: ${{ secrets.KUBE_CONFIG_PROD_RANCHER }}
+     required: true
    jf_artifactory_token:
      description: 'Artifactory Auth Token'
      required: true
