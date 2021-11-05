@@ -19,7 +19,7 @@ inputs:
      required: false
      default: 'kubernetes/.'
    environment:
-     descripton: 'dev, prod'
+     descripton: 'dev, qa, prod'
      required: true
    kube_config_data:
      description: 'Kube config for rancher cluster'
@@ -33,28 +33,95 @@ inputs:
    image_tag:
      description: 'Artifactory Docker image tag that need to be promoted to the next environment repo'
      required: true
-     
+   github_repository:
+     description: 'GitHub Repository'
+     required: false
+     default: ${{ github.repository }}
+   github_token:
+     description: 'GitHub token'
+     required: false
+     default: ${{ github.token }}
+    
 runs:
   using: "composite"
+  
   steps:
-#      - name: Read labels file contents
-#        id: read_labels
-#        uses: andstor/file-reader-action@v1
-#        with:
-#          path: ${{ inputs.labels_path }}
+    - name: Get previous env name by environment
+      uses: sherwin-williams-co/sw-environment-properties-action@master
+      id: prv-env
+      with:
+        environment: ${{ inputs.environment }}
+        
+    - name: Retrieve Latest Artifactory Build Tag
+      uses: sherwin-williams-co/sw-github-deploydesc-action@main
+      id: image_tag
+      with:
+        repo: ${{ inputs.github_repository}}
+        gittoken: ${{ inputs.github_token }}
+        deployenv: ${{steps.prv-env.outputs.environmentDeployEnvironment}}
+         
+    - name: Create GitHub deployment
+      uses: sherwin-williams-co/sw-deployment-action@main
+      id: deployment
+      with:
+        token: ${{ inputs.github_token }}
+        description: "Deploying kubernetes files into Rancher with docker image tag #${{steps.image_tag.outputs.deployment_build_number}}"
+        environment: ${{ inputs.environment }}
+    
+    - name: Check if file exists
+      id: check_files
+      uses: andstor/file-existence-action@v1
+      with:
+        files: "labels"
+     
+    - name: Read labels file contents
+      if: ${{ steps.check_files.outputs.files_exists == 'true' }}
+      id: read_labels
+      uses: andstor/file-reader-action@v1
+      with:
+        path: ${{ inputs.labels_path }}
 
-# #      - name: File contents
-# #        run: echo "${{ steps.read_labels.outputs.contents }}"
-# #        shell: bash
+    - name: File contents
+      if: ${{ steps.check_files.outputs.files_exists == 'true' }}
+      run: echo "${{ steps.read_labels.outputs.contents }}"
+      shell: bash
 
-# #      - name: Replace labels
-# #        uses: jacobtomlinson/gha-find-replace@master
-# #        with:
-# #          find: "@LABELS" 
-# #          replace: ${{ steps.read_label.outputs.contents }}
-# #          include: ${{ inputs.deployment_yamp_path }}
+    - name: Replace labels
+      if: ${{ steps.check_files.outputs.files_exists == 'true' }}
+      uses: jacobtomlinson/gha-find-replace@master
+      with:
+        find: "@LABELS" 
+        replace: ${{ steps.read_label.outputs.contents }}
+        include: ${{ inputs.deployment_yamp_path }}
+   
+    - name: 🏷 Replace Image Tag
+      uses: jacobtomlinson/gha-find-replace@master
+      with:
+        find: "@DOCKER_TAG"
+        replace: ${{steps.image_tag.outputs.deployment_build_number}}
+        include: 'kubernetes/*.yml'
+    
+    - name: 📦 Deploy to np rancher cluster
+      if: ${{ inputs.environment != 'prod' }}
+      uses: sherwin-williams-co/sw-rancher-deploy-composite-action@main
+      with:
+        environment: ${{ inputs.environment }}
+        namespace: ${{ inputs.namespace }}
+        kube_config_data: ${{ inputs.kube_config_data }}
+        jf_artifactory_token: ${{ secrets.jf_artifactory_token }}
+        image_name: sherwin-williams-co/da-team-workflows
+        image_tag: ${{ steps.image_tag.outputs.deploy_description }}
 
-     - name: Docker image promote 
+    - name: 📦 Deploy to prod rancher cluster
+      if: ${{ inputs.environment == 'prod' }}
+      uses: sherwin-williams-co/sw-rancher-deploy-composite-action@main
+      with:
+        environment: ${ {inputs.environment }}
+        namespace: ${{ inputs.namespace }}
+        kube_config_data: ${{ inputs.kube_config_data }}
+        jf_artifactory_token: ${{ inputs.jf_artifactory_token }}
+    
+    - name: Docker image promote 
        uses: sherwin-williams-co/sw-promote-docker-image-action@main
        if: ${{ inputs.environment != 'dev' }}
        with:
@@ -62,15 +129,22 @@ runs:
          image_name: ${{ inputs.image_name }}
          image_tag: ${{ inputs.image_tag }}
          artifactory_secret: ${{ inputs.jf_artifactory_token }}
+      
+    - name: Update deployment status (success)
+      if: success()
+      uses: sherwin-williams-co/sw-deployment-status@master
+      with:
+        token: ${{ inputs.github_token }}
+        state: "success"
+        deployment_id: ${{ steps.deployment.outputs.deployment_id  }}
 
-     - name: Deploy to rancher cluster
-       uses: sherwin-williams-co/sw-rancher-deploy-action@master
-       env:
-         KUBE_CONFIG_DATA: ${{ inputs.kube_config_data }}
-       with:
-         namespace: "${{ inputs.environment }}-${{ inputs.namespace }}"
-         files: "-f ${{ inputs.files }}"
-        
+    - name: Update deployment status (failure)
+      if: failure()
+      uses: sherwin-williams-co/sw-deployment-status@master
+      with:
+        token: ${{ inputs.github_token }}
+        state: "failure"
+        deployment_id: ${{ steps.deployment.outputs.deployment_id  }}
         
 branding:
   icon: git-branch
