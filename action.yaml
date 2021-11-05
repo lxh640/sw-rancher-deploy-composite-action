@@ -24,11 +24,11 @@ inputs:
    np_kube_config_data:
      description: 'Kube config for non-prod rancher cluster'
      required: false
-     default: ${{ secrets.KUBE_CONFIG_NP_RANCHER }}
+#      default: ${{ secrets.KUBE_CONFIG_NP_RANCHER }}
    prod_kube_config_data:
      description: 'Kube config for prod rancher cluster'
      required: false
-     default: ${{ secrets.KUBE_CONFIG_PROD_RANCHER }}
+#      default: ${{ secrets.KUBE_CONFIG_PROD_RANCHER }}
    jf_artifactory_token:
      description: 'Artifactory Auth Token'
      required: true
@@ -107,7 +107,7 @@ runs:
         environment: ${{ inputs.environment }}
         namespace: ${{ inputs.namespace }}
         kube_config_data: ${{ inputs.np_kube_config_data }}
-        jf_artifactory_token: ${{ secrets.jf_artifactory_token }}
+        jf_artifactory_token: ${{ inputs.jf_artifactory_token }}
         image_name: sherwin-williams-co/da-team-workflows
         image_tag: ${{ steps.image_tag.outputs.deploy_description }}
 
