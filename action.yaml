@@ -1,5 +1,5 @@
-name: Rancher Deploy Action
-description: Deploy into Rancher Cluster
+name: Promote Docker Image and Rancher Deploy Action
+description: Promote Docker Image and Deploy into Rancher Cluster
 author: DA Team <da.team@sherwin.com>
 inputs:    
    labels_path:
@@ -24,6 +24,15 @@ inputs:
    kube_config_data:
      description: 'Kube config for rancher cluster'
      required: true
+   jf_artifactory_token:
+     description: 'Artifactory Auth Token'
+     required: true
+   image_name:
+     description: 'Artifactory Docker image name that need to be promoted to the next environment repo'
+     required: true
+   image_tag:
+     description: 'Artifactory Docker image tag that need to be promoted to the next environment repo'
+     required: true
      
 runs:
   using: "composite"
@@ -47,12 +56,12 @@ runs:
 
      - name: Docker image promote 
        uses: sherwin-williams-co/sw-promote-docker-image-action@main
-       if: ${{ github.event.inputs.ENV != 'dev' }}
+       if: ${{ inputs.environment != 'dev' }}
        with:
-         environment: ${{ github.event.inputs.ENV }}
-         image_name: ${{ github.event.inputs.IMAGE_NAME }}
-         image_tag: ${{ github.event.inputs.TAG }}
-         artifactory_secret: ${{ secrets.JF_ARTIFACTORY_TOKEN }}
+         environment: ${{ inputs.environment }}
+         image_name: ${{ inputs.image_name }}
+         image_tag: ${{ inputs.image_tag }}
+         artifactory_secret: ${{ inputs.jf_artifactory_token }}
 
      - name: Deploy to rancher cluster
        uses: sherwin-williams-co/sw-rancher-deploy-action@master
