@@ -83,21 +83,16 @@ runs:
       with:
         files: "-f kubernetes/."
         namespace: ${{ inputs.environment }}-${{ inputs.namespace }}
-#         environment: ${{ inputs.environment }}
-#         namespace: ${{ inputs.namespace }}
-#         kube_config_data: ${{ inputs.np_kube_config_data }}
-#         jf_artifactory_token: ${{ inputs.jf_artifactory_token }}
-#         image_name: sherwin-williams-co/da-team-workflows
-#         image_tag: ${{ steps.image_tag.outputs.deploy_description }}
+
         
-#     - name: 📦 Deploy to prod rancher cluster
-#       if: ${{ inputs.environment == 'prod' }}
-#       uses: sherwin-williams-co/sw-rancher-deploy-composite-action@main
-#       with:
-#         environment: ${ {inputs.environment }}
-#         namespace: ${{ inputs.namespace }}
-#         kube_config_data: ${{ inputs.prod_kube_config_data }}
-#         jf_artifactory_token: ${{ inputs.jf_artifactory_token }}
+    - name: 📦 Deploy to prod rancher cluster
+      if: ${{ inputs.environment == 'prod' }}
+      uses: sherwin-williams-co/sw-rancher-deploy-action@master
+      env:
+        KUBE_CONFIG_DATA: ${{ inputs.prod_kube_config_data }}
+      with:
+        files: "-f kubernetes/."
+        namespace: ${{ inputs.environment }}-${{ inputs.namespace }}
     
     - name: Docker image promote 
       uses: sherwin-williams-co/sw-promote-docker-image-action@main
