@@ -93,7 +93,7 @@ runs:
         replace: ${{ steps.read_label.outputs.contents }}
         include: ${{ inputs.deployment_yamp_path }}
    
-   - name: 🏷 Replace Image Tag
+    - name: 🏷 Replace Image Tag
       uses: jacobtomlinson/gha-find-replace@master
       with:
         find: "@DOCKER_TAG"
