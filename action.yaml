@@ -89,7 +89,7 @@ runs:
       with:
         find: "@LABELS" 
         replace: ${{ steps.read_label.outputs.contents }}
-        include: ${{ inputs.deployment_yaml_path }}
+#         include: ${{ inputs.deployment_yaml_path }}
    
     - name: 🏷 Replace Image Tag
       uses: jacobtomlinson/gha-find-replace@master
