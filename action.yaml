@@ -56,7 +56,7 @@ runs:
 
      - name: Docker image promote 
        uses: sherwin-williams-co/sw-promote-docker-image-action@main
-       if: ${{ github.event.inputs.ENV != 'dev' }}
+       if: ${{ inputs.environment != 'dev' }}
        with:
          environment: ${{ inputs.environment }}
          image_name: ${{ inputs.image_name }}
