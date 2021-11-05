@@ -90,7 +90,7 @@ runs:
       with:
         find: "@LABELS" 
         replace: "${{ steps.read_label.outputs.contents }}"
-        inclue: 'kubernetes/deployment.yml'
+        include: 'kubernetes/deployment.yml'
 #         include: "${{ inputs.deployment_yaml_path }}"
    
     - name: 🏷 Replace Image Tag
