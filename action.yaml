@@ -108,7 +108,6 @@ runs:
         files: "-f kubernetes/."
         namespace: ${{ inputs.environment }}-${{ inputs.namespace }}
 
-        
     - name: 📦 Deploy to prod rancher cluster
       if: ${{ inputs.environment == 'prod' }}
       uses: sherwin-williams-co/sw-rancher-deploy-action@master
