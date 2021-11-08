@@ -129,7 +129,7 @@ runs:
       
     - name: Update deployment status (success) 👍 
       if: success()
-      uses: sherwin-williams-co/sw-deployment-status@master
+      uses: sherwin-williams-co/sw-deployment-status-action@master
       with:
         token: ${{ inputs.github_token }}
         state: "success"
@@ -137,7 +137,7 @@ runs:
 
     - name: Update deployment status (failure) 👎
       if: failure()
-      uses: sherwin-williams-co/sw-deployment-status@master
+      uses: sherwin-williams-co/sw-deployment-status-action@master
       with:
         token: ${{ inputs.github_token }}
         state: "failure"
