@@ -30,7 +30,11 @@ inputs:
      required: true
    jf_artifactory_token:
      description: 'Artifactory Auth Token'
-     required: true
+     required: false
+   image_registry_provider:
+     description: 'Registry provider'
+     required: false
+     default: 'artifactory'
    image_name:
      description: 'Artifactory Docker image name that need to be promoted to the next environment repo'
      required: false
@@ -119,7 +123,7 @@ runs:
     
     - name: ⬆️ Docker image promote 
       uses: sherwin-williams-co/sw-promote-docker-image-action@main
-      if: ${{ inputs.environment != 'dev' }}
+      if: ${{ inputs.environment != 'dev' && inputs.image_registry_provider == 'artifactory' }}
       with:
         environment: ${{ inputs.environment }}
         image_name: ${{ inputs.image_name }}
