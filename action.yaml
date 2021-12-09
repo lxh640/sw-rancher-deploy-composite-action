@@ -109,7 +109,7 @@ runs:
       env:
         KUBE_CONFIG_DATA: ${{ inputs.np_kube_config_data }}
       with:
-        files: "-f kubernetes/."
+        files: "-f ${{ inputs.files }}"
         namespace: ${{ inputs.environment }}-${{ inputs.namespace }}
 
     - name: 📦 Deploy to prod rancher cluster
@@ -118,7 +118,7 @@ runs:
       env:
         KUBE_CONFIG_DATA: ${{ inputs.prod_kube_config_data }}
       with:
-        files: "-f kubernetes/."
+        files: "-f ${{ inputs.files }}"
         namespace: ${{ inputs.environment }}-${{ inputs.namespace }}
     
     - name: ⬆️ Docker image promote 
