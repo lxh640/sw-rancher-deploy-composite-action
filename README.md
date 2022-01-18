@@ -20,7 +20,7 @@ Usage:
           np_kube_config_data: ${{ secrets.KUBE_CONFIG_NP_RANCHER }}
           prod_kube_config_data: ${{ secrets.KUBE_CONFIG_PROD_RANCHER }}
           # Optional
-          # jf_arttifactory_token: ${{ secrets.JF_ARTIFACTORY_TOKEN }}
+          # jf_artifactory_token: ${{ secrets.JF_ARTIFACTORY_TOKEN }}
           # labels_path: 'kubernetes/labels'
           # deployment_yaml_path: 'kubernetes/deployment.yml'
           # namespace: 'gitactions'
